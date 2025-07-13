@@ -4,6 +4,7 @@ import viteTsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig(() => {
   return {
+    base: "/emoji-kitchen/", // <--- این خط جدید برای حل مشکل آدرس‌دهی است
     build: {
       outDir: "build",
     },
