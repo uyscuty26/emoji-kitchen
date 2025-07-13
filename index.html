@@ -1,67 +1,42 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Emoji&display=swap"
-      rel="stylesheet"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Kitchen Mini App</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- اسکریپت رسمی تلگرام برای مینی اپ -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
 
-    <!-- Google meta tags -->
-    <title>Emoji Kitchen</title>
-    <meta charset="utf-8" />
-    <meta
-      name="description"
-      content="Unique illustrations of combined emoji, cooked up in Google's Emoji Kitchen, and comprehensively available on the web"
-    />
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <div id="app-container">
+        <!-- ۱. لیست ایموجی‌ها در بالا -->
+        <div id="emoji-selector-container">
+            <div id="emoji-selector">
+                <!-- ایموجی‌ها توسط جاوا اسکریپت در اینجا قرار می‌گیرند -->
+            </div>
+        </div>
 
-    <!-- OpenGraph tags -->
-    <meta
-      property="og:title"
-      content="Emoji Kitchen - Browse Google's unique emoji combinations"
-    />
-    <meta property="og:url" content="https://emojikitchen.dev" />
-    <meta property="og:image" content="https://emojikitchen.dev/social.png" />
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:description"
-      content="Unique illustrations of combined emoji, cooked up in Google's Emoji Kitchen, and comprehensively available on the web"
-    />
+        <!-- ۲. کادر ترکیب ایموجی‌ها در وسط -->
+        <div id="combination-area">
+            <div class="emoji-box" id="box1"></div>
+            <span class="operator">+</span>
+            <div class="emoji-box" id="box2"></div>
+            <span class="operator">=</span>
+            <div class="result-box" id="result-box">
+                 <!-- نتیجه در اینجا نمایش داده می‌شود -->
+            </div>
+        </div>
 
-    <!-- Twitter tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://emojikitchen.dev/social.png" />
-    <meta
-      name="twitter:title"
-      content="Emoji Kitchen - Browse Google's unique emoji combinations"
-    />
-    <meta
-      name="twitter:description"
-      content="Unique illustrations of combined emoji, cooked up in Google's Emoji Kitchen, and comprehensively available on the web"
-    />
+        <!-- دکمه کپی کردن نتیجه -->
+        <div id="actions">
+            <button id="copy-button" style="display: none;">کپی کردن تصویر</button>
+        </div>
+        
+    </div>
 
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-  </head>
-  <body style="margin: 0">
-    <div id="root"></div>
-    <script type="text/javascript">
-      if (window.self !== window.top) {
-        window.top.location.href =
-          "https://en.wikipedia.org/wiki/Special:Random";
-      }
-    </script>
-    <script type="module" src="/src/index.tsx"></script>
-  </body>
+    <script src="script.js"></script>
+</body>
 </html>
