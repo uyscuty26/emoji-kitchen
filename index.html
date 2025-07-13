@@ -1,67 +1,290 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Emoji&display=swap"
-      rel="stylesheet"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-
-    <!-- Google meta tags -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Emoji Kitchen</title>
-    <meta charset="utf-8" />
-    <meta
-      name="description"
-      content="Unique illustrations of combined emoji, cooked up in Google's Emoji Kitchen, and comprehensively available on the web"
-    />
-    <link rel="shortcut icon" href="/emoji-kitchen/favicon.ico" />
+    <!-- Telegram Web App script -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- OpenGraph tags -->
-    <meta
-      property="og:title"
-      content="Emoji Kitchen - Browse Google's unique emoji combinations"
-    />
-    <meta property="og:url" content="https://emojikitchen.dev" />
-    <meta property="og:image" content="https://emojikitchen.dev/social.png" />
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:description"
-      content="Unique illustrations of combined emoji, cooked up in Google's Emoji Kitchen, and comprehensively available on the web"
-    />
+    <!-- CSS STYLES -->
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            overflow: hidden; /* Prevent scrolling of the whole page */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
 
-    <!-- Twitter tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://emojikitchen.dev/social.png" />
-    <meta
-      name="twitter:title"
-      content="Emoji Kitchen - Browse Google's unique emoji combinations"
-    />
-    <meta
-      name="twitter:description"
-      content="Unique illustrations of combined emoji, cooked up in Google's Emoji Kitchen, and comprehensively available on the web"
-    />
+        #app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
 
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/emoji-kitchen/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/emoji-kitchen/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/emoji-kitchen/favicon-16x16.png" />
-    <link rel="manifest" href="/emoji-kitchen/site.webmanifest" />
-    <script type="module" crossorigin src="/emoji-kitchen/assets/index-DZI0mgy_.js"></script>
-  </head>
-  <body style="margin: 0">
-    <div id="root"></div>
-    <script type="text/javascript">
-      if (window.self !== window.top) {
-        window.top.location.href =
-          "https://en.wikipedia.org/wiki/Special:Random";
-      }
+        /* Emoji Selector Grid at the top */
+        #emoji-selector-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 10px;
+            overflow-y: auto; /* Make the grid scrollable */
+            flex-grow: 1; /* Allow grid to take available space */
+            border-bottom: 2px solid var(--tg-theme-secondary-bg-color, #f0f0f0);
+            margin-bottom: 15px;
+        }
+
+        .emoji-item {
+            font-size: 32px;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .emoji-item:hover {
+            transform: scale(1.2);
+            background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
+        }
+
+        /* Combination Area Styles */
+        #combination-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 10px;
+            gap: 15px;
+            flex-shrink: 0; /* Prevent this area from shrinking */
+        }
+
+        .emoji-box {
+            width: 60px;
+            height: 60px;
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .emoji-box.active {
+            border-color: var(--tg-theme-button-color, #007AFF);
+            border-style: solid;
+        }
+
+        .plus-sign, .equals-sign {
+            font-size: 30px;
+            font-weight: bold;
+            color: #888;
+        }
+
+        /* Result Box Styles */
+        #result-box {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        #result-image {
+            max-width: 100%;
+            max-height: 100%;
+            transition: transform 0.2s;
+        }
+
+        #result-image:active {
+            transform: scale(0.9);
+        }
+
+        /* Simple Loader for initial loading */
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--tg-theme-button-color, #3498db);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HTML BODY -->
+    <div id="app-container">
+        <!-- Grid to display all selectable emojis -->
+        <div id="emoji-selector-grid">
+            <div class="loader"></div>
+        </div>
+
+        <!-- The main area for combining emojis -->
+        <div id="combination-area">
+            <div id="emoji-box-1" class="emoji-box active" data-box-id="1"></div>
+            <span class="plus-sign">+</span>
+            <div id="emoji-box-2" class="emoji-box" data-box-id="2"></div>
+            <span class="equals-sign">=</span>
+            <div id="result-box">
+                <img id="result-image" src="" alt="Combined Emoji">
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Initialize Telegram Web App ---
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    Telegram.WebApp.ready();
+                    Telegram.WebApp.expand();
+                }
+            } catch (e) {
+                console.error("Telegram WebApp is not available:", e);
+            }
+
+            // --- DOM Elements ---
+            const emojiGrid = document.getElementById('emoji-selector-grid');
+            const box1 = document.getElementById('emoji-box-1');
+            const box2 = document.getElementById('emoji-box-2');
+            const resultImage = document.getElementById('result-image');
+            const resultBox = document.getElementById('result-box');
+
+            // --- State Variables ---
+            let activeBox = 1; // 1 or 2
+            let selectedEmoji1 = null;
+            let selectedEmoji2 = null;
+            let emojiData = [];
+            
+            // --- Load and Process Emoji Metadata ---
+            const loadEmojiData = async () => {
+                try {
+                    // Assuming metadata.json is in the same directory
+                    const response = await fetch('metadata.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    emojiData = await response.json();
+
+                    // Extract unique base emojis to populate the grid
+                    const allKnownEmojis = new Set();
+                    emojiData.forEach(item => {
+                        allKnownEmojis.add(item.leftEmoji);
+                        allKnownEmojis.add(item.rightEmoji);
+                    });
+                    
+                    // Sort emojis and populate the grid
+                    const sortedEmojis = [...allKnownEmojis].sort();
+                    populateEmojiGrid(sortedEmojis);
+
+                } catch (error) {
+                    console.error("Failed to load or parse metadata.json:", error);
+                    emojiGrid.innerHTML = 'Error loading emojis.';
+                }
+            };
+
+            // --- Populate the top grid with selectable emojis ---
+            const populateEmojiGrid = (emojis) => {
+                emojiGrid.innerHTML = ''; // Clear loader
+                emojis.forEach(emoji => {
+                    const emojiEl = document.createElement('div');
+                    emojiEl.className = 'emoji-item';
+                    emojiEl.textContent = emoji;
+                    emojiEl.addEventListener('click', () => onEmojiSelect(emoji));
+                    emojiGrid.appendChild(emojiEl);
+                });
+            };
+
+            // --- Handle clicking on an emoji from the grid ---
+            const onEmojiSelect = (emoji) => {
+                if (activeBox === 1) {
+                    selectedEmoji1 = emoji;
+                    box1.textContent = emoji;
+                    setActiveBox(2); // Automatically switch to the next box
+                } else {
+                    selectedEmoji2 = emoji;
+                    box2.textContent = emoji;
+                    // setActiveBox(1); // Optional: uncomment to switch back to the first box
+                }
+                updateResult();
+            };
+
+            // --- Handle clicking on the input boxes ---
+            const setActiveBox = (boxNumber) => {
+                activeBox = boxNumber;
+                box1.classList.toggle('active', boxNumber === 1);
+                box2.classList.toggle('active', boxNumber === 2);
+            };
+            
+            box1.addEventListener('click', () => setActiveBox(1));
+            box2.addEventListener('click', () => setActiveBox(2));
+
+            // --- Find the combination and update the result image ---
+            const updateResult = () => {
+                resultImage.src = ''; // Clear previous result
+                if (!selectedEmoji1 || !selectedEmoji2) {
+                    return;
+                }
+
+                // Search for the combination
+                const combination = emojiData.find(item => 
+                    (item.leftEmoji === selectedEmoji1 && item.rightEmoji === selectedEmoji2) ||
+                    (item.leftEmoji === selectedEmoji2 && item.rightEmoji === selectedEmoji1)
+                );
+
+                if (combination) {
+                    resultImage.src = combination.gStaticUrl;
+                } else {
+                    resultImage.src = ''; 
+                }
+            };
+
+            // --- Handle copying the result image ---
+            resultBox.addEventListener('click', async () => {
+                const hapticFeedback = window.Telegram?.WebApp?.HapticFeedback;
+                if (!resultImage.src || !navigator.clipboard) {
+                    if (hapticFeedback) hapticFeedback.notificationOccurred('error');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(resultImage.src);
+                    const blob = await response.blob();
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]);
+                    if (hapticFeedback) hapticFeedback.notificationOccurred('success');
+                    
+                    // Optional: Show a confirmation popup
+                    // window.Telegram?.WebApp?.showPopup({ title: 'Copied!', message: 'Sticker copied to clipboard.' });
+
+                } catch (err) {
+                    console.error('Failed to copy image: ', err);
+                    if (hapticFeedback) hapticFeedback.notificationOccurred('error');
+                }
+            });
+
+            // --- Initial load ---
+            loadEmojiData();
+        });
     </script>
-  </body>
+
+</body>
 </html>
