@@ -1,42 +1,44 @@
+
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emoji Kitchen Mini App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Emoji Kitchen</title>
     <link rel="stylesheet" href="style.css">
-    <!-- اسکریپت رسمی تلگرام برای مینی اپ -->
+    <!-- Telegram Web App script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
     <div id="app-container">
-        <!-- لیست ایموجی‌ها در بالا -->
-        <div id="emoji-selector-container">
-            <div id="emoji-selector">
-                <!-- ایموجی‌ها توسط جاوا اسکریپت در اینجا قرار می‌گیرند -->
-            </div>
+        <!-- Grid to display all selectable emojis -->
+        <div id="emoji-selector-grid">
+            <div class="loader"></div>
         </div>
 
-        <!-- کادر ترکیب ایموجی‌ها در وسط -->
+        <!-- The main area for combining emojis -->
         <div id="combination-area">
-            <div class="emoji-box" id="box1"></div>
-            <span class="operator">+</span>
-            <div class="emoji-box" id="box2"></div>
-            <span class="operator">=</span>
-            <div class="result-box" id="result-box">
-                 <!-- نتیجه در اینجا نمایش داده می‌شود -->
+            <div id="emoji-box-1" class="emoji-box active" data-box-id="1">
+                <!-- Emoji 1 will appear here -->
+            </div>
+            <span class="plus-sign">+</span>
+            <div id="emoji-box-2" class="emoji-box" data-box-id="2">
+                <!-- Emoji 2 will appear here -->
+            </div>
+            <span class="equals-sign">=</span>
+            <div id="result-box">
+                <img id="result-image" src="" alt="Combined Emoji">
             </div>
         </div>
         
-        <!-- دکمه کپی -->
-        <div id="actions">
-            <button id="copy-button" style="display: none;">کپی کردن تصویر</button>
-            <p id="copy-feedback" style="display: none;">کپی شد!</p>
-        </div>
-        
+        <!-- A hidden canvas for copying image -->
+        <canvas id="copy-canvas" style="display: none;"></canvas>
     </div>
 
+    <!-- Main application script -->
     <script src="script.js"></script>
+
 </body>
 </html>
+
